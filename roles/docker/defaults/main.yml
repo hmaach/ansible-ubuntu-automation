@@ -1,0 +1,8 @@
+---
+# Docker role defaults
+docker_package_state: present
+docker_compose_version: "v2.24.5"
+docker_users:
+  - "{{ default_user }}"
+docker_apt_release_channel: stable
+docker_apt_arch: amd64
