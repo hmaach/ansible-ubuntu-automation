@@ -1,0 +1,5 @@
+---
+# Users role defaults
+create_admin_users: true
+default_user_shell: /bin/bash
+ssh_key_directory: "/home/{{ item.name }}/.ssh"

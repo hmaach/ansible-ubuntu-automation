@@ -1,0 +1,41 @@
+---
+- name: Create admin user group
+  group:
+    name: admin
+    state: present
+
+- name: Create admin users
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ default_user_shell }}"
+    groups: admin
+    append: true
+    state: present
+  loop: "{{ admin_users }}"
+  when: create_admin_users | bool
+
+- name: Create .ssh directory for users
+  file:
+    path: "{{ ssh_key_directory | replace('{{ item.name }}', item.name) }}"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: '0700'
+  loop: "{{ admin_users }}"
+  when: create_admin_users | bool
+
+- name: Add SSH authorized keys
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    state: present
+  loop: "{{ admin_users }}"
+  when: create_admin_users | bool
+
+- name: Allow admin group sudo without password
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^%admin'
+    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+    state: present
+    validate: 'visudo -cf %s'
