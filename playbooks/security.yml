@@ -1,0 +1,49 @@
+---
+- name: Security Hardening
+  hosts: all
+  become: true
+  roles:
+    - users
+  tasks:
+    - name: Configure UFW firewall rules
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop: "{{ firewall_allowed_tcp_ports }}"
+      notify: Enable UFW
+
+    - name: Disable root SSH login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+      notify: Restart SSH
+
+    - name: Disable SSH password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+      notify: Restart SSH
+
+    - name: Set SSH port
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^Port'
+        line: 'Port {{ ssh_port }}'
+        state: present
+      notify: Restart SSH
+
+  handlers:
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: restarted
