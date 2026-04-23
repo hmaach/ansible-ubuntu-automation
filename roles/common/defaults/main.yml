@@ -1,0 +1,5 @@
+---
+# Common role defaults
+update_cache_valid_time: 3600
+upgrade_type: safe
+install_system_packages: true

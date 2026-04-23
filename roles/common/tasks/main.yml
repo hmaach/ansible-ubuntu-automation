@@ -1,0 +1,17 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: "{{ update_cache_valid_time }}"
+
+- name: Upgrade all packages
+  apt:
+    upgrade: "{{ upgrade_type }}"
+    autoremove: true
+    autoclean: true
+
+- name: Install system packages
+  apt:
+    name: "{{ system_packages }}"
+    state: present
+  when: install_system_packages | bool
