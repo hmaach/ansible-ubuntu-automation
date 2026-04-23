@@ -1,0 +1,33 @@
+# Shared variables for all hosts
+ssh_port: 22
+firewall_allowed_tcp_ports:
+  - 22
+  - 80
+  - 443
+
+# User configuration
+default_user: ubuntu
+admin_users:
+  - name: "ansible-admin"
+    ssh_key: "ssh-ed25519 AAAA... user@host"  # Replace with actual SSH public key
+
+# Docker configuration
+docker_package_state: present
+docker_compose_version: "v2.24.5"
+docker_users:
+  - "{{ default_user }}"
+
+# Nginx configuration
+nginx_listen_port: 80
+nginx_proxy_target: "http://127.0.0.1:8080"  # Default proxy target
+nginx_server_name: "_"  # Catch-all server name
+
+# System configuration
+system_packages:
+  - vim
+  - curl
+  - wget
+  - git
+  - ufw
+  - python3
+  - python3-pip
