@@ -1,0 +1,8 @@
+---
+# Nginx role defaults
+nginx_listen_port: 80
+nginx_server_name: "_"
+nginx_proxy_target: "http://127.0.0.1:8080"
+nginx_config_directory: /etc/nginx/sites-available
+nginx_enabled_directory: /etc/nginx/sites-enabled
+nginx_default_site: default

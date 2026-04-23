@@ -1,0 +1,32 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Remove default Nginx site
+  file:
+    path: "{{ nginx_enabled_directory }}/{{ nginx_default_site }}"
+    state: absent
+  notify: Reload Nginx
+
+- name: Deploy reverse proxy configuration
+  template:
+    src: reverse_proxy.j2
+    dest: "{{ nginx_config_directory }}/reverse_proxy"
+    mode: '0644'
+  notify: Reload Nginx
+
+- name: Enable reverse proxy site
+  file:
+    src: "{{ nginx_config_directory }}/reverse_proxy"
+    dest: "{{ nginx_enabled_directory }}/reverse_proxy"
+    state: link
+  notify: Reload Nginx
+
+- name: Start and enable Nginx
+  service:
+    name: nginx
+    state: started
+    enabled: true
